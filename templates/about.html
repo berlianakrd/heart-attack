@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tentang — Prediksi Serangan Jantung</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Tentang Proyek</h1>
+      <nav class="main-nav">
+        <a href="{{ url_for('index') }}">Beranda</a>
+        <a href="{{ url_for('predict') }}">Prediksi</a>
+        <a href="{{ url_for('analysis') }}">Analisis Data</a>
+        <a href="{{ url_for('about') }}" class="active">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Deskripsi singkat</h2>
+      <p>Proyek ini mengembangkan model machine learning untuk memperkirakan risiko serangan jantung menggunakan dataset terbuka. Tujuan: pendidikan dan eksperimen analisis data.</p>
+
+      <h3>Peringatan</h3>
+      <p class="muted">
+        Aplikasi ini <strong>bukan</strong> alat diagnosis klinis. Hasil prediksi tidak dapat menggantikan pemeriksaan dokter.
+      </p>
+
+      <h3>Struktur proyek</h3>
+      <ol>
+        <li><strong>notebooks/</strong> — Notebook Jupyter (CRISP-DM: Business → Modeling → Visualization).</li>
+        <li><strong>data/</strong> — CSV dataset.</li>
+        <li><strong>models/</strong> — Model tersimpan (pickle).</li>
+        <li><strong>templates/</strong> &amp; <strong>static/</strong> — Frontend Flask.</li>
+      </ol>
+
+      <h3>Cara menjalankan (singkat)</h3>
+      <pre>pip install -r requirements.txt
+python app.py
+# buka http://127.0.0.1:5000</pre>
+
+      <h3>Kontak</h3>
+      <p>Untuk pertanyaan teknis, sertakan pesan melalui repo atau email pengembang (jika tersedia).</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© {{ current_year if current_year is defined else "2025" }}</p>
+    </div>
+  </footer>
+</body>
+</html>

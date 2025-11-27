@@ -1,0 +1,90 @@
+:root{
+  --bg:#f7f8fb;
+  --card:#ffffff;
+  --accent:#1565c0;
+  --muted:#666;
+  --maxw:1000px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:#111;
+  line-height:1.5;
+}
+
+.container{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:1rem;
+}
+
+/* Header */
+.site-header{
+  background:linear-gradient(90deg, #0b57a4, #1565c0);
+  color:white;
+  padding:0.75rem 0;
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between}
+.brand{margin:0;font-size:1.2rem}
+.main-nav a{
+  color:rgba(255,255,255,0.95);
+  margin-left:1rem;
+  text-decoration:none;
+  font-weight:600;
+}
+.main-nav a.active{text-decoration:underline}
+
+/* Hero */
+.hero{
+  background:linear-gradient(180deg, rgba(21,101,192,0.06), transparent);
+  padding:2rem;
+  border-radius:10px;
+  margin:1.25rem 0;
+}
+.hero h2{margin-top:0}
+.cta-row{margin-top:1rem}
+.btn{
+  display:inline-block;
+  background:var(--accent);
+  color:white;
+  padding:0.65rem 1rem;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:700;
+}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid rgba(21,101,192,0.12);}
+
+/* Features */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+.features article{background:var(--card);padding:1rem;border-radius:8px;box-shadow:0 4px 10px rgba(15,15,15,0.03)}
+
+/* Card */
+.card{background:var(--card);padding:1rem;border-radius:10px;box-shadow:0 6px 18px rgba(15,15,15,0.04);margin-bottom:1rem}
+
+/* Form */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.8rem}
+label{display:block;font-size:0.92rem;color:#222}
+input[type="text"], input[type="number"], select{
+  width:100%;padding:0.5rem;border-radius:6px;border:1px solid #ddd;margin-top:0.35rem;
+}
+.form-actions{margin-top:1rem;display:flex;gap:0.5rem}
+
+/* Result */
+.result{margin-top:1rem;padding:1rem;background:#f1f8ff;border-radius:8px}
+.muted{color:var(--muted)}
+
+/* Charts */
+.charts{display:grid;grid-template-columns:1fr;gap:1rem}
+.chart-card img{max-width:100%;height:auto;border-radius:6px;display:block}
+
+/* Footer */
+.site-footer{padding:1rem 0;text-align:center;color:var(--muted);font-size:0.9rem}
+
+/* Responsive tweaks */
+@media (max-width:640px){
+  .header-inner{flex-direction:column;gap:0.6rem;align-items:start}
+  .main-nav a{margin-left:0.6rem}
+}

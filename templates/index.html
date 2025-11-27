@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prediksi Serangan Jantung — Beranda</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Prediksi Serangan Jantung (Indonesia)</h1>
+      <nav class="main-nav">
+        <a href="{{ url_for('index') }}">Beranda</a>
+        <a href="{{ url_for('predict') }}">Prediksi</a>
+        <a href="{{ url_for('analysis') }}">Analisis Data</a>
+        <a href="{{ url_for('about') }}">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>Deteksi dini risiko serangan jantung dengan machine learning</h2>
+      <p>
+        Aplikasi ini membantu memprediksi risiko serangan jantung berdasarkan data klinis sederhana.
+        Ditujukan sebagai alat bantu edukasi dan penelitian — bukan pengganti pemeriksaan medis profesional.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="{{ url_for('predict') }}">Mulai Prediksi</a>
+        <a class="btn ghost" href="{{ url_for('analysis') }}">Lihat Analisis Data</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <article>
+        <h3>Mudah digunakan</h3>
+        <p>Form input sederhana untuk memasukkan nilai seperti usia, tekanan darah, kolesterol, dll.</p>
+      </article>
+      <article>
+        <h3>Model yang tersimpan</h3>
+        <p>Model terlatih disimpan dan diload dari folder <code>models/</code> untuk inferensi cepat.</p>
+      </article>
+      <article>
+        <h3>Privasi</h3>
+        <p>Semua input diproses di server. Jangan masukkan informasi identitas pribadi.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© {{ current_year if current_year is defined else "2025" }} — Prediksi Serangan Jantung (untuk pembelajaran)</p>
+    </div>
+  </footer>
+</body>
+</html>

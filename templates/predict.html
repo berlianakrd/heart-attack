@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prediksi — Prediksi Serangan Jantung</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Form Prediksi</h1>
+      <nav class="main-nav">
+        <a href="{{ url_for('index') }}">Beranda</a>
+        <a href="{{ url_for('predict') }}" class="active">Prediksi</a>
+        <a href="{{ url_for('analysis') }}">Analisis Data</a>
+        <a href="{{ url_for('about') }}">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Masukkan data pasien</h2>
+      <form id="predict-form" method="POST" action="{{ url_for('predict_post') }}">
+        <div class="form-grid">
+          <label>Usia (tahun)
+            <input name="age" type="number" min="1" max="120" required>
+          </label>
+
+          <label>Jenis Kelamin
+            <select name="sex" required>
+              <option value="1">Laki-laki</option>
+              <option value="0">Perempuan</option>
+            </select>
+          </label>
+
+          <label>Tekanan Darah Sistolik (mmHg)
+            <input name="trestbps" type="number" step="1" required>
+          </label>
+
+          <label>Kadar Kolesterol (mg/dl)
+            <input name="chol" type="number" step="1" required>
+          </label>
+
+          <label>Gula Darah Sewaktu > 120 mg/dl?
+            <select name="fbs" required>
+              <option value="1">Ya</option>
+              <option value="0">Tidak</option>
+            </select>
+          </label>
+
+          <label>Detak Jantung Maksimal (thalach)
+            <input name="thalach" type="number" required>
+          </label>
+
+          <label>Nyeri Dada (angina) saat beraktivitas?
+            <select name="exang" required>
+              <option value="1">Ya</option>
+              <option value="0">Tidak</option>
+            </select>
+          </label>
+
+          <!-- Tambah input lain sesuai fitur model -->
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Prediksi</button>
+          <button type="reset" class="btn ghost">Reset</button>
+        </div>
+      </form>
+
+      {% if prediction is defined %}
+      <div class="result">
+        <h3>Hasil Prediksi</h3>
+        <p>Kemungkinan serangan jantung: <strong>{{ prediction.probability*100 | round(2) }}%</strong></p>
+        <p>Kategori: <strong>{{ prediction.label }}</strong></p>
+        <p class="muted">Catatan: Ini hanya estimasi dari model; konsultasikan ke tenaga medis untuk diagnosis.</p>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© {{ current_year if current_year is defined else "2025" }}</p>
+    </div>
+  </footer>
+</body>
+</html>

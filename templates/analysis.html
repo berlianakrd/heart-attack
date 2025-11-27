@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Analisis Data — Prediksi Serangan Jantung</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Analisis Data</h1>
+      <nav class="main-nav">
+        <a href="{{ url_for('index') }}">Beranda</a>
+        <a href="{{ url_for('predict') }}">Prediksi</a>
+        <a href="{{ url_for('analysis') }}" class="active">Analisis Data</a>
+        <a href="{{ url_for('about') }}">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Ringkasan dataset</h2>
+      <p>Dataset yang digunakan: <code>data/heart_attack_data.csv</code></p>
+      <ul>
+        <li>Jumlah baris: <strong>{{ stats.row_count if stats is defined else "—" }}</strong></li>
+        <li>Fitur utama: usia, jenis kelamin, tekanan darah, kolesterol, detak jantung maksimum, dll.</li>
+        <li>Target: kejadian serangan jantung (0 = tidak, 1 = ya)</li>
+      </ul>
+
+      <h3>Metode dan hasil singkat</h3>
+      <p>Model dilatih menggunakan algoritma <em>RandomForest / Logistic Regression / XGBoost</em> (tergantung notebook). Hasil evaluasi termasuk akurasi, precision, recall, dan AUC ditampilkan bila tersedia.</p>
+
+      {% if charts %}
+      <div class="charts">
+        {% for chart in charts %}
+          <div class="chart-card">
+            <h4>{{ chart.title }}</h4>
+            <img src="{{ chart.url }}" alt="{{ chart.title }}">
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="muted">Tidak ada visualisasi yang dihasilkan. Jalankan notebook atau script visualisasi untuk membuat grafik.</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© {{ current_year if current_year is defined else "2025" }}</p>
+    </div>
+  </footer>
+</body>
+</html>
