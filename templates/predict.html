@@ -1,91 +1,552 @@
-<!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prediksi — Prediksi Serangan Jantung</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <h1 class="brand">Form Prediksi</h1>
-      <nav class="main-nav">
-        <a href="{{ url_for('index') }}">Beranda</a>
-        <a href="{{ url_for('predict') }}" class="active">Prediksi</a>
-        <a href="{{ url_for('analysis') }}">Analisis Data</a>
-        <a href="{{ url_for('about') }}">Tentang</a>
-      </nav>
-    </div>
-  </header>
+{% extends "base.html" %}
 
-  <main class="container">
-    <section class="card">
-      <h2>Masukkan data pasien</h2>
-      <form id="predict-form" method="POST" action="{{ url_for('predict_post') }}">
-        <div class="form-grid">
-          <label>Usia (tahun)
-            <input name="age" type="number" min="1" max="120" required>
-          </label>
+{% block title %}Predict - Indonesia Heart Attack Prediction{% endblock %}
 
-          <label>Jenis Kelamin
-            <select name="sex" required>
-              <option value="1">Laki-laki</option>
-              <option value="0">Perempuan</option>
-            </select>
-          </label>
-
-          <label>Tekanan Darah Sistolik (mmHg)
-            <input name="trestbps" type="number" step="1" required>
-          </label>
-
-          <label>Kadar Kolesterol (mg/dl)
-            <input name="chol" type="number" step="1" required>
-          </label>
-
-          <label>Gula Darah Sewaktu > 120 mg/dl?
-            <select name="fbs" required>
-              <option value="1">Ya</option>
-              <option value="0">Tidak</option>
-            </select>
-          </label>
-
-          <label>Detak Jantung Maksimal (thalach)
-            <input name="thalach" type="number" required>
-          </label>
-
-          <label>Nyeri Dada (angina) saat beraktivitas?
-            <select name="exang" required>
-              <option value="1">Ya</option>
-              <option value="0">Tidak</option>
-            </select>
-          </label>
-
-          <!-- Tambah input lain sesuai fitur model -->
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn">Prediksi</button>
-          <button type="reset" class="btn ghost">Reset</button>
-        </div>
-      </form>
-
-      {% if prediction is defined %}
-      <div class="result">
-        <h3>Hasil Prediksi</h3>
-        <p>Kemungkinan serangan jantung: <strong>{{ prediction.probability*100 | round(2) }}%</strong></p>
-        <p>Kategori: <strong>{{ prediction.label }}</strong></p>
-        <p class="muted">Catatan: Ini hanya estimasi dari model; konsultasikan ke tenaga medis untuk diagnosis.</p>
-      </div>
-      {% endif %}
-    </section>
-  </main>
-
-  <footer class="site-footer">
+{% block content %}
+<!-- Page Header -->
+<section class="bg-gradient-primary text-white py-5">
     <div class="container">
-      <p>© {{ current_year if current_year is defined else "2025" }}</p>
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-calculator"></i> Prediksi Risiko Serangan Jantung
+                </h1>
+                <p class="lead">
+                    Masukkan data kesehatan Anda untuk mendapatkan prediksi risiko serangan jantung menggunakan AI
+                </p>
+                <div class="alert alert-light d-inline-block">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Model:</strong> {{ model_name }} | <strong>Accuracy:</strong> {{ accuracy }}%
+                </div>
+            </div>
+        </div>
     </div>
-  </footer>
-</body>
-</html>
+</section>
+
+<!-- Prediction Form Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Form Column -->
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-file-medical"></i> Form Input Data</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="predictionForm">
+                            <!-- Demographics Section -->
+                            <div class="section-header mb-4">
+                                <h5 class="fw-bold text-primary border-bottom pb-2">
+                                    <i class="fas fa-user"></i> Data Demografis
+                                </h5>
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="age" class="form-label">Usia <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="age" name="age" 
+                                           min="25" max="90" required>
+                                    <small class="text-muted">25-90 tahun</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="gender" class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Male">Laki-laki</option>
+                                        <option value="Female">Perempuan</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="region" class="form-label">Wilayah <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="region" name="region" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Urban">Urban (Perkotaan)</option>
+                                        <option value="Rural">Rural (Pedesaan)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="income_level" class="form-label">Tingkat Pendapatan <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="income_level" name="income_level" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Low">Rendah</option>
+                                        <option value="Middle">Menengah</option>
+                                        <option value="High">Tinggi</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Clinical Risk Factors Section -->
+                            <div class="section-header mb-4">
+                                <h5 class="fw-bold text-primary border-bottom pb-2">
+                                    <i class="fas fa-stethoscope"></i> Faktor Risiko Klinis
+                                </h5>
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="hypertension" class="form-label">Hipertensi (Tekanan Darah Tinggi)</label>
+                                    <select class="form-select" id="hypertension" name="hypertension" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="diabetes" class="form-label">Diabetes</label>
+                                    <select class="form-select" id="diabetes" name="diabetes" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cholesterol_level" class="form-label">Kadar Kolesterol Total (mg/dL)</label>
+                                    <input type="number" class="form-control" id="cholesterol_level" 
+                                           name="cholesterol_level" min="100" max="400" required>
+                                    <small class="text-muted">Normal: <200, Tinggi: >240</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="obesity" class="form-label">Obesitas (BMI > 30)</label>
+                                    <select class="form-select" id="obesity" name="obesity" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="waist_circumference" class="form-label">Lingkar Pinggang (cm)</label>
+                                    <input type="number" class="form-control" id="waist_circumference" 
+                                           name="waist_circumference" min="50" max="150" required>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="family_history" class="form-label">Riwayat Keluarga Penyakit Jantung</label>
+                                    <select class="form-select" id="family_history" name="family_history" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Lifestyle Factors Section -->
+                            <div class="section-header mb-4">
+                                <h5 class="fw-bold text-primary border-bottom pb-2">
+                                    <i class="fas fa-running"></i> Faktor Gaya Hidup
+                                </h5>
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="smoking_status" class="form-label">Status Merokok</label>
+                                    <select class="form-select" id="smoking_status" name="smoking_status" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Never">Tidak Pernah</option>
+                                        <option value="Past">Dulu Merokok</option>
+                                        <option value="Current">Masih Merokok</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="alcohol_consumption" class="form-label">Konsumsi Alkohol</label>
+                                    <select class="form-select" id="alcohol_consumption" name="alcohol_consumption" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="None">Tidak</option>
+                                        <option value="Moderate">Sedang</option>
+                                        <option value="High">Tinggi</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="physical_activity" class="form-label">Aktivitas Fisik</label>
+                                    <select class="form-select" id="physical_activity" name="physical_activity" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Low">Rendah</option>
+                                        <option value="Moderate">Sedang</option>
+                                        <option value="High">Tinggi</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="dietary_habits" class="form-label">Pola Makan</label>
+                                    <select class="form-select" id="dietary_habits" name="dietary_habits" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Healthy">Sehat</option>
+                                        <option value="Unhealthy">Tidak Sehat</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Environmental & Social Factors -->
+                            <div class="section-header mb-4">
+                                <h5 class="fw-bold text-primary border-bottom pb-2">
+                                    <i class="fas fa-cloud"></i> Faktor Lingkungan & Sosial
+                                </h5>
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label for="air_pollution_exposure" class="form-label">Paparan Polusi Udara</label>
+                                    <select class="form-select" id="air_pollution_exposure" name="air_pollution_exposure" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Low">Rendah</option>
+                                        <option value="Moderate">Sedang</option>
+                                        <option value="High">Tinggi</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label for="stress_level" class="form-label">Tingkat Stress</label>
+                                    <select class="form-select" id="stress_level" name="stress_level" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Low">Rendah</option>
+                                        <option value="Moderate">Sedang</option>
+                                        <option value="High">Tinggi</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label for="sleep_hours" class="form-label">Jam Tidur per Malam</label>
+                                    <input type="number" class="form-control" id="sleep_hours" 
+                                           name="sleep_hours" min="3" max="9" step="0.1" required>
+                                    <small class="text-muted">3-9 jam</small>
+                                </div>
+                            </div>
+
+                            <!-- Medical Screening -->
+                            <div class="section-header mb-4">
+                                <h5 class="fw-bold text-primary border-bottom pb-2">
+                                    <i class="fas fa-hospital"></i> Data Pemeriksaan Medis
+                                </h5>
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="blood_pressure_systolic" class="form-label">Tekanan Darah Sistolik (mmHg)</label>
+                                    <input type="number" class="form-control" id="blood_pressure_systolic" 
+                                           name="blood_pressure_systolic" min="80" max="200" required>
+                                    <small class="text-muted">Normal: <120</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="blood_pressure_diastolic" class="form-label">Tekanan Darah Diastolik (mmHg)</label>
+                                    <input type="number" class="form-control" id="blood_pressure_diastolic" 
+                                           name="blood_pressure_diastolic" min="40" max="130" required>
+                                    <small class="text-muted">Normal: <80</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="fasting_blood_sugar" class="form-label">Gula Darah Puasa (mg/dL)</label>
+                                    <input type="number" class="form-control" id="fasting_blood_sugar" 
+                                           name="fasting_blood_sugar" min="60" max="200" required>
+                                    <small class="text-muted">Normal: 70-100</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cholesterol_hdl" class="form-label">HDL Cholesterol (mg/dL)</label>
+                                    <input type="number" class="form-control" id="cholesterol_hdl" 
+                                           name="cholesterol_hdl" min="20" max="100" required>
+                                    <small class="text-muted">Baik: >60</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cholesterol_ldl" class="form-label">LDL Cholesterol (mg/dL)</label>
+                                    <input type="number" class="form-control" id="cholesterol_ldl" 
+                                           name="cholesterol_ldl" min="30" max="300" required>
+                                    <small class="text-muted">Optimal: <100</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="triglycerides" class="form-label">Trigliserida (mg/dL)</label>
+                                    <input type="number" class="form-control" id="triglycerides" 
+                                           name="triglycerides" min="30" max="400" required>
+                                    <small class="text-muted">Normal: <150</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="EKG_results" class="form-label">Hasil EKG</label>
+                                    <select class="form-select" id="EKG_results" name="EKG_results" required>
+                                        <option value="">Pilih...</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Abnormal">Abnormal</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="previous_heart_disease" class="form-label">Riwayat Penyakit Jantung</label>
+                                    <select class="form-select" id="previous_heart_disease" name="previous_heart_disease" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="medication_usage" class="form-label">Penggunaan Obat Jantung</label>
+                                    <select class="form-select" id="medication_usage" name="medication_usage" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="participated_in_free_screening" class="form-label">Ikut Program Screening Gratis</label>
+                                    <select class="form-select" id="participated_in_free_screening" 
+                                            name="participated_in_free_screening" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg" id="predictBtn">
+                                    <i class="fas fa-calculator"></i> Prediksi Risiko Sekarang
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary">
+                                    <i class="fas fa-redo"></i> Reset Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="col-lg-4">
+                <!-- Loading Indicator -->
+                <div id="loadingIndicator" class="card border-0 shadow-sm mb-4" style="display: none;">
+                    <div class="card-body text-center p-4">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5>Menganalisis Data...</h5>
+                        <p class="text-muted mb-0">Mohon tunggu sebentar</p>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div id="resultCard" class="card border-0 shadow-lg mb-4" style="display: none;">
+                    <div class="card-header text-white" id="resultHeader">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Hasil Prediksi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="result-icon mb-3" id="resultIcon">
+                                <i class="fas fa-heart-pulse fa-4x"></i>
+                            </div>
+                            <h3 class="fw-bold mb-2" id="resultLabel"></h3>
+                            <div class="progress mb-3" style="height: 25px;">
+                                <div class="progress-bar" id="resultProgress" role="progressbar" 
+                                     style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <span id="resultProbability"></span>
+                                </div>
+                            </div>
+                            <h5 id="riskLevel" class="mb-3"></h5>
+                        </div>
+                        
+                        <div class="alert" id="resultMessage" role="alert"></div>
+                        
+                        <div id="recommendationsSection">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-list-check"></i> Rekomendasi:</h6>
+                            <ul class="list-unstyled" id="recommendationsList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">
+                            <i class="fas fa-info-circle text-info"></i> Informasi
+                        </h5>
+                        <hr>
+                        <p class="small text-muted">
+                            <strong>Catatan:</strong> Sistem prediksi ini menggunakan machine learning 
+                            untuk membantu identifikasi risiko serangan jantung. Hasil prediksi bukan 
+                            diagnosis medis dan harus dikonfirmasi oleh tenaga medis profesional.
+                        </p>
+                        <div class="alert alert-warning small mb-0">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Penting:</strong> Selalu konsultasikan dengan dokter untuk diagnosis 
+                            dan penanganan yang tepat.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">
+                            <i class="fas fa-lightbulb text-warning"></i> Tips Pengisian
+                        </h5>
+                        <hr>
+                        <ul class="small text-muted mb-0">
+                            <li>Isi semua field dengan data yang akurat</li>
+                            <li>Gunakan hasil pemeriksaan medis terbaru</li>
+                            <li>Jika tidak yakin, kosongkan atau pilih "Normal"</li>
+                            <li>Konsultasi hasil dengan dokter Anda</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .section-header {
+        margin-top: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #333;
+    }
+    
+    .result-icon {
+        font-size: 3rem;
+    }
+    
+    #resultCard {
+        animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .progress-bar {
+        font-weight: bold;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Form submission handler
+    $('#predictionForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading
+        $('#loadingIndicator').show();
+        $('#resultCard').hide();
+        $('#predictBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+        
+        // Collect form data
+        var formData = {};
+        $(this).serializeArray().forEach(function(field) {
+            // Convert to appropriate type
+            if (field.name === 'age' || field.name === 'hypertension' || field.name === 'diabetes' ||
+                field.name === 'obesity' || field.name === 'family_history' || 
+                field.name === 'previous_heart_disease' || field.name === 'medication_usage' ||
+                field.name === 'participated_in_free_screening') {
+                formData[field.name] = parseInt(field.value);
+            } else if (field.name === 'cholesterol_level' || field.name === 'waist_circumference' ||
+                      field.name === 'sleep_hours' || field.name === 'blood_pressure_systolic' ||
+                      field.name === 'blood_pressure_diastolic' || field.name === 'fasting_blood_sugar' ||
+                      field.name === 'cholesterol_hdl' || field.name === 'cholesterol_ldl' ||
+                      field.name === 'triglycerides') {
+                formData[field.name] = parseFloat(field.value);
+            } else {
+                formData[field.name] = field.value;
+            }
+        });
+        
+        // Make API call
+        $.ajax({
+            url: '/api/predict',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                // Hide loading
+                $('#loadingIndicator').hide();
+                $('#predictBtn').prop('disabled', false).html('<i class="fas fa-calculator"></i> Prediksi Risiko Sekarang');
+                
+                if (response.success) {
+                    // Show result
+                    displayResult(response);
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#loadingIndicator').hide();
+                $('#predictBtn').prop('disabled', false).html('<i class="fas fa-calculator"></i> Prediksi Risiko Sekarang');
+                alert('Prediction failed: ' + error);
+            }
+        });
+    });
+    
+    function displayResult(response) {
+        // Set header color based on risk
+        var headerClass = 'bg-' + response.risk_color;
+        $('#resultHeader').removeClass().addClass('card-header text-white ' + headerClass);
+        
+        // Set icon
+        var icon = response.prediction === 1 ? 
+            '<i class="fas fa-heart-crack fa-4x text-danger"></i>' :
+            '<i class="fas fa-heart fa-4x text-success"></i>';
+        $('#resultIcon').html(icon);
+        
+        // Set label
+        $('#resultLabel').text(response.prediction_label);
+        
+        // Set probability
+        if (response.probability !== null) {
+            $('#resultProgress').css('width', response.probability + '%')
+                               .attr('aria-valuenow', response.probability);
+            $('#resultProbability').text(response.probability + '%');
+            
+            // Set progress bar color
+            $('#resultProgress').removeClass().addClass('progress-bar bg-' + response.risk_color);
+        }
+        
+        // Set risk level
+        $('#riskLevel').html('<span class="badge bg-' + response.risk_color + ' fs-6">' + 
+                            response.risk_level + ' Risk</span>');
+        
+        // Set message
+        $('#resultMessage').removeClass().addClass('alert alert-' + response.risk_color);
+        $('#resultMessage').html('<strong>' + response.message + '</strong>');
+        
+        // Set recommendations
+        var recommendationsHtml = '';
+        response.recommendations.forEach(function(rec) {
+            recommendationsHtml += '<li class="mb-2"><i class="fas fa-check-circle text-success"></i> ' + 
+                                  rec + '</li>';
+        });
+        $('#recommendationsList').html(recommendationsHtml);
+        
+        // Show result card
+        $('#resultCard').show();
+        
+        // Scroll to result
+        $('html, body').animate({
+            scrollTop: $('#resultCard').offset().top - 100
+        }, 500);
+    }
+});
+</script>
+{% endblock %}

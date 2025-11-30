@@ -1,58 +1,283 @@
-<!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prediksi Serangan Jantung — Beranda</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <h1 class="brand">Prediksi Serangan Jantung (Indonesia)</h1>
-      <nav class="main-nav">
-        <a href="{{ url_for('index') }}">Beranda</a>
-        <a href="{{ url_for('predict') }}">Prediksi</a>
-        <a href="{{ url_for('analysis') }}">Analisis Data</a>
-        <a href="{{ url_for('about') }}">Tentang</a>
-      </nav>
-    </div>
-  </header>
+{% extends "base.html" %}
 
-  <main class="container">
-    <section class="hero">
-      <h2>Deteksi dini risiko serangan jantung dengan machine learning</h2>
-      <p>
-        Aplikasi ini membantu memprediksi risiko serangan jantung berdasarkan data klinis sederhana.
-        Ditujukan sebagai alat bantu edukasi dan penelitian — bukan pengganti pemeriksaan medis profesional.
-      </p>
-      <div class="cta-row">
-        <a class="btn" href="{{ url_for('predict') }}">Mulai Prediksi</a>
-        <a class="btn ghost" href="{{ url_for('analysis') }}">Lihat Analisis Data</a>
-      </div>
-    </section>
+{% block title %}Home - Indonesia Heart Attack Prediction{% endblock %}
 
-    <section class="features">
-      <article>
-        <h3>Mudah digunakan</h3>
-        <p>Form input sederhana untuk memasukkan nilai seperti usia, tekanan darah, kolesterol, dll.</p>
-      </article>
-      <article>
-        <h3>Model yang tersimpan</h3>
-        <p>Model terlatih disimpan dan diload dari folder <code>models/</code> untuk inferensi cepat.</p>
-      </article>
-      <article>
-        <h3>Privasi</h3>
-        <p>Semua input diproses di server. Jangan masukkan informasi identitas pribadi.</p>
-      </article>
-    </section>
-  </main>
-
-  <footer class="site-footer">
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-gradient text-white py-5">
     <div class="container">
-      <p>© {{ current_year if current_year is defined else "2025" }} — Prediksi Serangan Jantung (untuk pembelajaran)</p>
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-heartbeat text-danger"></i>
+                    Indonesia Heart Attack Prediction
+                </h1>
+                <p class="lead mb-4">
+                    AI-powered system untuk memprediksi risiko serangan jantung berdasarkan faktor kesehatan, 
+                    gaya hidup, dan demografis populasi Indonesia.
+                </p>
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{{ url_for('predict_page') }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-calculator"></i> Mulai Prediksi
+                    </a>
+                    <a href="{{ url_for('about') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-heart-pulse" style="font-size: 15rem; opacity: 0.3;"></i>
+            </div>
+        </div>
     </div>
-  </footer>
-</body>
-</html>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Fitur Utama</h2>
+            <p class="text-muted">Sistem prediksi yang komprehensif dan akurat</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-brain fa-2x"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Machine Learning</h5>
+                        <p class="card-text text-muted">
+                            Menggunakan algoritma supervised learning (Logistic Regression, Decision Tree, KNN) 
+                            untuk prediksi akurat.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Data Science Life Cycle</h5>
+                        <p class="card-text text-muted">
+                            Mengikuti 7 tahapan lengkap dari business understanding hingga visualization 
+                            dan deployment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-danger text-white rounded-circle mx-auto mb-3">
+                            <i class="fas fa-hospital fa-2x"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Data Indonesia</h5>
+                        <p class="card-text text-muted">
+                            Dataset dirancang khusus untuk populasi Indonesia dengan 500+ sampel dan 28 features 
+                            komprehensif.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Statistik Kunci</h2>
+            <p class="text-muted">Data dan insights dari dataset</p>
+        </div>
+        
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h3 class="fw-bold mb-2">500+</h3>
+                        <p class="text-muted mb-0">Total Sampel</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-database fa-3x text-success mb-3"></i>
+                        <h3 class="fw-bold mb-2">28</h3>
+                        <p class="text-muted mb-0">Features</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-percentage fa-3x text-info mb-3"></i>
+                        <h3 class="fw-bold mb-2">85%+</h3>
+                        <p class="text-muted mb-0">Model Accuracy</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="fas fa-shield-alt fa-3x text-danger mb-3"></i>
+                        <h3 class="fw-bold mb-2">7</h3>
+                        <p class="text-muted mb-0">Data Science Stages</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Cara Kerja</h2>
+            <p class="text-muted">Proses prediksi yang mudah dan cepat</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3">1</div>
+                <h5 class="fw-bold">Input Data</h5>
+                <p class="text-muted">Masukkan data kesehatan, demografis, dan gaya hidup Anda</p>
+            </div>
+            
+            <div class="col-md-3 text-center">
+                <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3">2</div>
+                <h5 class="fw-bold">Analisis AI</h5>
+                <p class="text-muted">Model machine learning menganalisis data Anda</p>
+            </div>
+            
+            <div class="col-md-3 text-center">
+                <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3">3</div>
+                <h5 class="fw-bold">Hasil Prediksi</h5>
+                <p class="text-muted">Dapatkan prediksi risiko dan tingkat probabilitas</p>
+            </div>
+            
+            <div class="col-md-3 text-center">
+                <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3">4</div>
+                <h5 class="fw-bold">Rekomendasi</h5>
+                <p class="text-muted">Terima rekomendasi kesehatan yang dipersonalisasi</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('predict_page') }}" class="btn btn-primary btn-lg px-5">
+                <i class="fas fa-arrow-right"></i> Mulai Sekarang
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Risk Factors Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Faktor Risiko Utama</h2>
+            <p class="text-muted">Faktor-faktor yang dianalisis dalam prediksi</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold mb-3">
+                            <i class="fas fa-stethoscope text-danger"></i> Faktor Klinis
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success"></i> Hipertensi</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Diabetes</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Kolesterol tinggi</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Obesitas</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Riwayat keluarga</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold mb-3">
+                            <i class="fas fa-running text-primary"></i> Faktor Gaya Hidup
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success"></i> Status merokok</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Konsumsi alkohol</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Aktivitas fisik</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Pola makan</li>
+                            <li><i class="fas fa-check-circle text-success"></i> Tingkat stress</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Siap Untuk Cek Risiko Anda?</h2>
+        <p class="lead mb-4">Deteksi dini adalah kunci pencegahan serangan jantung</p>
+        <a href="{{ url_for('predict_page') }}" class="btn btn-light btn-lg px-5">
+            <i class="fas fa-heartbeat"></i> Mulai Prediksi Sekarang
+        </a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 60vh;
+    }
+    
+    .min-vh-50 {
+        min-height: 50vh;
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    }
+    
+    .step-number {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

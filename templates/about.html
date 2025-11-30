@@ -1,57 +1,475 @@
-<!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tentang — Prediksi Serangan Jantung</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <h1 class="brand">Tentang Proyek</h1>
-      <nav class="main-nav">
-        <a href="{{ url_for('index') }}">Beranda</a>
-        <a href="{{ url_for('predict') }}">Prediksi</a>
-        <a href="{{ url_for('analysis') }}">Analisis Data</a>
-        <a href="{{ url_for('about') }}" class="active">Tentang</a>
-      </nav>
-    </div>
-  </header>
+{% extends "base.html" %}
 
-  <main class="container">
-    <section class="card">
-      <h2>Deskripsi singkat</h2>
-      <p>Proyek ini mengembangkan model machine learning untuk memperkirakan risiko serangan jantung menggunakan dataset terbuka. Tujuan: pendidikan dan eksperimen analisis data.</p>
+{% block title %}About - Indonesia Heart Attack Prediction{% endblock %}
 
-      <h3>Peringatan</h3>
-      <p class="muted">
-        Aplikasi ini <strong>bukan</strong> alat diagnosis klinis. Hasil prediksi tidak dapat menggantikan pemeriksaan dokter.
-      </p>
-
-      <h3>Struktur proyek</h3>
-      <ol>
-        <li><strong>notebooks/</strong> — Notebook Jupyter (CRISP-DM: Business → Modeling → Visualization).</li>
-        <li><strong>data/</strong> — CSV dataset.</li>
-        <li><strong>models/</strong> — Model tersimpan (pickle).</li>
-        <li><strong>templates/</strong> &amp; <strong>static/</strong> — Frontend Flask.</li>
-      </ol>
-
-      <h3>Cara menjalankan (singkat)</h3>
-      <pre>pip install -r requirements.txt
-python app.py
-# buka http://127.0.0.1:5000</pre>
-
-      <h3>Kontak</h3>
-      <p>Untuk pertanyaan teknis, sertakan pesan melalui repo atau email pengembang (jika tersedia).</p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
+{% block content %}
+<!-- Page Header -->
+<section class="bg-gradient-dark text-white py-5">
     <div class="container">
-      <p>© {{ current_year if current_year is defined else "2025" }}</p>
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-info-circle"></i> About This Project
+                </h1>
+                <p class="lead">
+                    AI-powered Heart Attack Risk Prediction System untuk Populasi Indonesia
+                </p>
+            </div>
+        </div>
     </div>
-  </footer>
-</body>
-</html>
+</section>
+
+<!-- Project Overview -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Project Overview</h2>
+                <p class="lead text-muted">
+                    Indonesia Heart Attack Prediction adalah sistem prediksi berbasis machine learning 
+                    yang dirancang untuk membantu identifikasi risiko serangan jantung pada populasi Indonesia.
+                </p>
+                <p>
+                    Sistem ini menggunakan pendekatan <strong>Data Science Life Cycle</strong> yang komprehensif, 
+                    mulai dari business understanding hingga deployment, dengan mengimplementasikan algoritma 
+                    supervised learning untuk klasifikasi.
+                </p>
+                <div class="row g-3 mt-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">High Accuracy</h6>
+                                <small class="text-muted">Model accuracy >85%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Comprehensive Data</h6>
+                                <small class="text-muted">28 health features analyzed</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Indonesia-Specific</h6>
+                                <small class="text-muted">Tailored for Indonesian population</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Real-time Prediction</h6>
+                                <small class="text-muted">Instant risk assessment</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://cdn-icons-png.flaticon.com/512/2913/2913133.png" 
+                     alt="Heart Health" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Data Science Life Cycle -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Data Science Life Cycle Implementation</h2>
+        
+        <div class="row g-4">
+            <!-- Stage 1 -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-primary text-white rounded-circle me-3">1</div>
+                            <h5 class="fw-bold mb-0">Business Understanding</h5>
+                        </div>
+                        <p class="text-muted">
+                            Mendefinisikan problem statement, objectives, dan success criteria untuk 
+                            prediksi serangan jantung di Indonesia. Mengidentifikasi stakeholders dan 
+                            kebutuhan bisnis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-info text-white rounded-circle me-3">2</div>
+                            <h5 class="fw-bold mb-0">Data Mining</h5>
+                        </div>
+                        <p class="text-muted">
+                            Mengumpulkan dan mengekstrak dataset dengan 500+ sampel dan 28 features 
+                            komprehensif mencakup demografis, klinis, gaya hidup, dan faktor lingkungan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-success text-white rounded-circle me-3">3</div>
+                            <h5 class="fw-bold mb-0">Data Cleaning</h5>
+                        </div>
+                        <p class="text-muted">
+                            Membersihkan data dari missing values, duplicates, outliers, dan inkonsistensi. 
+                            Memastikan kualitas data >99% untuk modeling yang optimal.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-warning text-white rounded-circle me-3">4</div>
+                            <h5 class="fw-bold mb-0">Data Exploration</h5>
+                        </div>
+                        <p class="text-muted">
+                            Exploratory Data Analysis (EDA) untuk memahami distribusi data, korelasi antar 
+                            variabel, dan mengidentifikasi patterns serta insights penting.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-danger text-white rounded-circle me-3">5</div>
+                            <h5 class="fw-bold mb-0">Feature Engineering</h5>
+                        </div>
+                        <p class="text-muted">
+                            Membuat new features (risk score, age groups, BP categories), encoding categorical 
+                            variables, feature selection, dan scaling untuk improve model performance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 6 -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-secondary text-white rounded-circle me-3">6</div>
+                            <h5 class="fw-bold mb-0">Predictive Modeling</h5>
+                        </div>
+                        <p class="text-muted">
+                            Training multiple classification models (Logistic Regression, Decision Tree, KNN), 
+                            hyperparameter tuning, cross-validation, dan model evaluation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 7 -->
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm bg-primary text-white">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stage-number bg-white text-primary rounded-circle me-3">7</div>
+                            <h5 class="fw-bold mb-0">Data Visualization & Deployment</h5>
+                        </div>
+                        <p class="mb-0">
+                            Membuat comprehensive visualizations, generating insights, dan deploy model 
+                            sebagai web application untuk akses real-time prediction oleh users.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technology Stack -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Technology Stack</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fab fa-python fa-4x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Python</h5>
+                        <p class="text-muted small mb-0">Core programming language</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fas fa-flask fa-4x text-success mb-3"></i>
+                        <h5 class="fw-bold">Flask</h5>
+                        <p class="text-muted small mb-0">Web framework</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fas fa-brain fa-4x text-danger mb-3"></i>
+                        <h5 class="fw-bold">Scikit-learn</h5>
+                        <p class="text-muted small mb-0">Machine learning</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fas fa-chart-bar fa-4x text-warning mb-3"></i>
+                        <h5 class="fw-bold">Pandas & NumPy</h5>
+                        <p class="text-muted small mb-0">Data processing</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fas fa-chart-line fa-4x text-info mb-3"></i>
+                        <h5 class="fw-bold">Matplotlib & Seaborn</h5>
+                        <p class="text-muted small mb-0">Data visualization</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fab fa-bootstrap fa-4x text-purple mb-3"></i>
+                        <h5 class="fw-bold">Bootstrap 5</h5>
+                        <p class="text-muted small mb-0">Frontend framework</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fab fa-js fa-4x text-warning mb-3"></i>
+                        <h5 class="fw-bold">JavaScript</h5>
+                        <p class="text-muted small mb-0">Frontend interactivity</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <i class="fas fa-chart-pie fa-4x text-success mb-3"></i>
+                        <h5 class="fw-bold">Chart.js</h5>
+                        <p class="text-muted small mb-0">Interactive charts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Model Information -->
+{% if model_info %}
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Model Information</h2>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-robot"></i> {{ model_info.get('model_name', 'Model') }}</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-muted mb-3">Performance Metrics</h6>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <strong>Accuracy:</strong> 
+                                        <span class="badge bg-success">{{ "%.2f"|format(model_info.get('accuracy', 0) * 100) }}%</span>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <strong>Precision:</strong> 
+                                        <span class="badge bg-info">{{ "%.2f"|format(model_info.get('precision', 0) * 100) }}%</span>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <strong>Recall:</strong> 
+                                        <span class="badge bg-warning text-dark">{{ "%.2f"|format(model_info.get('recall', 0) * 100) }}%</span>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <strong>F1-Score:</strong> 
+                                        <span class="badge bg-primary">{{ "%.2f"|format(model_info.get('f1_score', 0) * 100) }}%</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-muted mb-3">Model Details</h6>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-database text-primary"></i>
+                                        <strong>Features:</strong> {{ model_info.get('n_features', 'N/A') }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-cogs text-secondary"></i>
+                                        <strong>Algorithm:</strong> Supervised Learning
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-tasks text-info"></i>
+                                        <strong>Task:</strong> Binary Classification
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-chart-line text-success"></i>
+                                        <strong>Validation:</strong> Cross-Validation (5-fold)
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Disclaimer -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="alert alert-warning border-0 shadow-sm">
+                    <h5 class="alert-heading fw-bold">
+                        <i class="fas fa-exclamation-triangle"></i> Important Disclaimer
+                    </h5>
+                    <hr>
+                    <p class="mb-2">
+                        <strong>Tujuan Pendidikan:</strong> Sistem ini dikembangkan untuk tujuan pembelajaran 
+                        dan demonstrasi dalam mata kuliah Artificial Intelligence.
+                    </p>
+                    <p class="mb-2">
+                        <strong>Bukan Diagnosis Medis:</strong> Hasil prediksi dari sistem ini BUKAN merupakan 
+                        diagnosis medis resmi dan tidak dapat menggantikan konsultasi dengan tenaga medis profesional.
+                    </p>
+                    <p class="mb-0">
+                        <strong>Konsultasi Profesional:</strong> Selalu konsultasikan kondisi kesehatan Anda 
+                        dengan dokter atau tenaga medis yang berkualifikasi untuk diagnosis dan penanganan yang tepat.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Academic Project -->
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Academic Project</h2>
+        <p class="lead mb-4">
+            Developed as part of Artificial Intelligence course curriculum
+        </p>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="p-3">
+                    <i class="fas fa-university fa-3x mb-3"></i>
+                    <h5 class="fw-bold">Course Project</h5>
+                    <p class="mb-0">AI & Machine Learning</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3">
+                    <i class="fas fa-graduation-cap fa-3x mb-3"></i>
+                    <h5 class="fw-bold">Learning Objectives</h5>
+                    <p class="mb-0">Applied Data Science</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3">
+                    <i class="fas fa-code fa-3x mb-3"></i>
+                    <h5 class="fw-bold">Implementation</h5>
+                    <p class="mb-0">End-to-End ML System</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact/Feedback -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="fw-bold mb-4">Questions or Feedback?</h2>
+                <p class="lead text-muted mb-4">
+                    Jika Anda memiliki pertanyaan, saran, atau feedback tentang project ini, 
+                    silakan hubungi kami atau berikan feedback melalui form.
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-center">
+                    <a href="{{ url_for('predict_page') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calculator"></i> Try Prediction
+                    </a>
+                    <a href="{{ url_for('analysis') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-chart-line"></i> View Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bg-gradient-dark {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .stage-number {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+    
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+    
+    .bg-purple {
+        background-color: #6f42c1 !important;
+    }
+</style>
+{% endblock %}
