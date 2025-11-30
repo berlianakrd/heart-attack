@@ -3,7 +3,7 @@ Indonesia Heart Attack Prediction - Flask Web Application
 Main application file
 """
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import pandas as pd
 import numpy as np
 import joblib
@@ -12,7 +12,7 @@ import os
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'indonesia-heart-attack-prediction-2024'
+app.config['SECRET_KEY'] = 'indonesia-heart-attack-prediction-2024-secure-key'
 
 # Load model and preprocessors
 MODEL_PATH = 'models/best_model.pkl'
@@ -138,29 +138,69 @@ def predict_page():
 
 @app.route('/analysis')
 def analysis():
-    """Data analysis page"""
-    # Load summary statistics
-    try:
-        df = pd.read_csv('data/heart_attack_data_cleaned.csv')
-        
-        stats = {
-            'total_samples': len(df),
-            'heart_attack_cases': int(df['heart_attack'].sum()),
-            'heart_attack_rate': f"{(df['heart_attack'].sum()/len(df))*100:.1f}",
-            'mean_age': f"{df['age'].mean():.1f}",
-            'male_count': int((df['gender'] == 'Male').sum()),
-            'female_count': int((df['gender'] == 'Female').sum()),
-            'urban_count': int((df['region'] == 'Urban').sum()),
-            'rural_count': int((df['region'] == 'Rural').sum()),
-            'hypertension_rate': f"{(df['hypertension'].sum()/len(df))*100:.1f}",
-            'diabetes_rate': f"{(df['diabetes'].sum()/len(df))*100:.1f}",
-            'obesity_rate': f"{(df['obesity'].sum()/len(df))*100:.1f}"
-        }
-    except Exception as e:
-        print(f"Error loading statistics: {str(e)}")
-        stats = {}
+    """
+    Data analysis page - Shows individual patient analysis
+    If patient data exists in session, show individual analysis
+    Otherwise, show dataset statistics
+    """
+    # Check if patient data exists in session
+    patient_data = session.get('patient_data', None)
+    prediction_result = session.get('prediction_result', None)
     
-    return render_template('analysis.html', stats=stats)
+    if patient_data and prediction_result:
+        # Individual patient analysis
+        return render_template('analysis.html', 
+                             patient_data=patient_data,
+                             prediction_result=prediction_result,
+                             is_individual=True)
+    else:
+        # Dataset statistics (fallback)
+        try:
+            # Try to load cleaned data first, fallback to original data
+            data_paths = [
+                'data/heart_attack_data_cleaned.csv',
+                'data/heart_attack_data.csv'
+            ]
+            
+            df = None
+            for path in data_paths:
+                if os.path.exists(path):
+                    df = pd.read_csv(path)
+                    print(f"✓ Loaded data from {path}")
+                    break
+            
+            if df is None:
+                raise FileNotFoundError("Dataset not found")
+            
+            # Calculate comprehensive statistics
+            stats = {
+                # Basic statistics
+                'total_samples': int(len(df)),
+                'heart_attack_cases': int(df['heart_attack'].sum()) if 'heart_attack' in df.columns else 0,
+                'heart_attack_rate': f"{(df['heart_attack'].sum()/len(df))*100:.1f}" if 'heart_attack' in df.columns else "N/A",
+                'mean_age': f"{df['age'].mean():.1f}" if 'age' in df.columns else "N/A",
+                
+                # Demographics
+                'male_count': int((df['gender'] == 'Male').sum()) if 'gender' in df.columns else 0,
+                'female_count': int((df['gender'] == 'Female').sum()) if 'gender' in df.columns else 0,
+                'urban_count': int((df['region'] == 'Urban').sum()) if 'region' in df.columns else 0,
+                'rural_count': int((df['region'] == 'Rural').sum()) if 'region' in df.columns else 0,
+                
+                # Risk factors prevalence
+                'hypertension_rate': f"{(df['hypertension'].sum()/len(df))*100:.1f}" if 'hypertension' in df.columns else "N/A",
+                'diabetes_rate': f"{(df['diabetes'].sum()/len(df))*100:.1f}" if 'diabetes' in df.columns else "N/A",
+                'obesity_rate': f"{(df['obesity'].sum()/len(df))*100:.1f}" if 'obesity' in df.columns else "N/A",
+            }
+            
+            print(f"✓ Statistics calculated successfully")
+            
+        except Exception as e:
+            print(f"❌ Error loading statistics: {str(e)}")
+            stats = {}
+        
+        return render_template('analysis.html', 
+                             stats=stats,
+                             is_individual=False)
 
 
 @app.route('/about')
@@ -209,6 +249,9 @@ def api_predict():
                 'message': 'No data provided'
             }), 400
         
+        # Save patient data to session for analysis page
+        session['patient_data'] = data
+        
         # Preprocess input
         X = preprocess_input(data)
         
@@ -246,6 +289,9 @@ def api_predict():
             'message': get_recommendation_message(prediction, probability),
             'recommendations': get_recommendations(data, prediction)
         }
+        
+        # Save prediction result to session
+        session['prediction_result'] = response
         
         return jsonify(response)
         
@@ -318,7 +364,20 @@ def get_recommendations(data, prediction):
 def api_statistics():
     """API endpoint to get dataset statistics"""
     try:
-        df = pd.read_csv('data/heart_attack_data_cleaned.csv')
+        # Try multiple data paths
+        data_paths = [
+            'data/heart_attack_data_cleaned.csv',
+            'data/heart_attack_data.csv'
+        ]
+        
+        df = None
+        for path in data_paths:
+            if os.path.exists(path):
+                df = pd.read_csv(path)
+                break
+        
+        if df is None:
+            raise FileNotFoundError("Dataset not found")
         
         stats = {
             'total_samples': int(len(df)),

@@ -3,7 +3,250 @@
 {% block title %}Analysis - Indonesia Heart Attack Prediction{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
+
+{% if is_individual %}
+<!-- INDIVIDUAL PATIENT ANALYSIS -->
+<section class="bg-gradient-info text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-chart-line"></i> Analisis Kesehatan Lengkap
+                </h1>
+                <p class="lead">
+                    Analisis mendalam berdasarkan data kesehatan Anda
+                </p>
+                <div class="alert alert-light d-inline-block mt-3">
+                    <i class="fas fa-user-md"></i>
+                    <strong>Status Prediksi:</strong> 
+                    <span class="badge bg-{{ prediction_result.get('risk_color', 'secondary') }} fs-6">
+                        {{ prediction_result.get('risk_level', 'N/A') }} Risk
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Patient Overview -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-calendar-alt fa-2x text-primary mb-2"></i>
+                        <h4 class="fw-bold mb-0">{{ patient_data.get('age', 'N/A') }}</h4>
+                        <small class="text-muted">Usia (tahun)</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-venus-mars fa-2x text-info mb-2"></i>
+                        <h4 class="fw-bold mb-0">{{ patient_data.get('gender', 'N/A') }}</h4>
+                        <small class="text-muted">Jenis Kelamin</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-map-marker-alt fa-2x text-success mb-2"></i>
+                        <h4 class="fw-bold mb-0">{{ patient_data.get('region', 'N/A') }}</h4>
+                        <small class="text-muted">Wilayah</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-percentage fa-2x text-danger mb-2"></i>
+                        <h4 class="fw-bold mb-0">{{ prediction_result.get('probability', 'N/A') }}%</h4>
+                        <small class="text-muted">Probabilitas Risiko</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Clinical Measurements -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-4">Pengukuran Klinis</h2>
+        
+        <div class="row g-4">
+            <!-- Blood Sugar Chart -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-syringe"></i> Gula Darah Puasa</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="bloodSugarChart"></canvas>
+                        <div class="mt-3 text-center">
+                            <strong>Nilai Anda: {{ patient_data.get('fasting_blood_sugar', 'N/A') }} mg/dL</strong>
+                            <p class="text-muted small mb-0">Normal: 70-100 mg/dL | Diabetes: ≥126 mg/dL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blood Pressure Chart -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-heartbeat"></i> Tekanan Darah</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="bloodPressureChart"></canvas>
+                        <div class="mt-3 text-center">
+                            <strong>Nilai Anda: {{ patient_data.get('blood_pressure_systolic', 'N/A') }}/{{ patient_data.get('blood_pressure_diastolic', 'N/A') }} mmHg</strong>
+                            <p class="text-muted small mb-0">Normal: <120/80 mmHg | Hipertensi: ≥140/90 mmHg</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cholesterol Analysis -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-4">Profil Kolesterol</h2>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Analisis Kolesterol</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="cholesterolChart"></canvas>
+                        <div class="row mt-4 text-center">
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body p-2">
+                                        <small class="text-muted">Total</small>
+                                        <h5 class="fw-bold mb-0">{{ patient_data.get('cholesterol_level', 'N/A') }}</h5>
+                                        <small class="text-muted">mg/dL</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body p-2">
+                                        <small class="text-muted">HDL (Baik)</small>
+                                        <h5 class="fw-bold mb-0">{{ patient_data.get('cholesterol_hdl', 'N/A') }}</h5>
+                                        <small class="text-muted">mg/dL</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body p-2">
+                                        <small class="text-muted">LDL (Buruk)</small>
+                                        <h5 class="fw-bold mb-0">{{ patient_data.get('cholesterol_ldl', 'N/A') }}</h5>
+                                        <small class="text-muted">mg/dL</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body p-2">
+                                        <small class="text-muted">Trigliserida</small>
+                                        <h5 class="fw-bold mb-0">{{ patient_data.get('triglycerides', 'N/A') }}</h5>
+                                        <small class="text-muted">mg/dL</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Risk Factors Analysis -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-4">Faktor Risiko</h2>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Faktor Risiko Klinis</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="riskFactorsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-running"></i> Profil Gaya Hidup</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="lifestyleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Overall Health Profile -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-4">Profil Kesehatan Keseluruhan</h2>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-shield-heart"></i> Radar Kesehatan</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="healthRadarChart"></canvas>
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Interpretasi:</strong> Semakin dekat ke tengah, semakin baik kondisi kesehatan. 
+                            Area yang menjorok keluar menunjukkan parameter yang perlu perhatian khusus.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Action Buttons -->
+<section class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="/predict" class="btn btn-primary btn-lg">
+                        <i class="fas fa-redo"></i> Prediksi Ulang
+                    </a>
+                    <button onclick="window.print()" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-print"></i> Print Hasil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% else %}
+<!-- DATASET STATISTICS (FALLBACK) -->
 <section class="bg-gradient-info text-white py-5">
     <div class="container">
         <div class="row">
@@ -14,6 +257,13 @@
                 <p class="lead">
                     Exploratory Data Analysis dari dataset Indonesia Heart Attack Prediction
                 </p>
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-info-circle"></i>
+                    Belum ada data prediksi. Silakan lakukan prediksi terlebih dahulu untuk melihat analisis individual.
+                </div>
+                <a href="/predict" class="btn btn-light btn-lg mt-3">
+                    <i class="fas fa-calculator"></i> Mulai Prediksi
+                </a>
             </div>
         </div>
     </div>
@@ -22,7 +272,7 @@
 <!-- Key Statistics Cards -->
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center fw-bold mb-4">Key Statistics</h2>
+        <h2 class="text-center fw-bold mb-4">Statistik Dataset</h2>
         
         <div class="row g-4 mb-5">
             <div class="col-md-3">
@@ -77,323 +327,7 @@
         </div>
     </div>
 </section>
-
-<!-- Demographics Analysis -->
-<section class="bg-light py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-4">Demographic Analysis</h2>
-        
-        <div class="row g-4">
-            <!-- Gender Distribution -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-venus-mars"></i> Gender Distribution</h5>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="genderChart"></canvas>
-                        <div class="mt-3 text-center">
-                            <span class="badge bg-info me-2">Male: {{ stats.get('male_count', 'N/A') }}</span>
-                            <span class="badge bg-pink">Female: {{ stats.get('female_count', 'N/A') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Region Distribution -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Region Distribution</h5>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="regionChart"></canvas>
-                        <div class="mt-3 text-center">
-                            <span class="badge bg-warning text-dark me-2">Urban: {{ stats.get('urban_count', 'N/A') }}</span>
-                            <span class="badge bg-success">Rural: {{ stats.get('rural_count', 'N/A') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Risk Factors Analysis -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-4">Clinical Risk Factors Prevalence</h2>
-        
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Major Risk Factors</h5>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="riskFactorsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Risk Factors Cards -->
-        <div class="row g-4 mt-4">
-            <div class="col-md-4">
-                <div class="card border-danger border-2 h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-heartbeat fa-3x text-danger mb-3"></i>
-                        <h4 class="fw-bold">{{ stats.get('hypertension_rate', 'N/A') }}%</h4>
-                        <p class="text-muted mb-0">Hipertensi</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card border-warning border-2 h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-syringe fa-3x text-warning mb-3"></i>
-                        <h4 class="fw-bold">{{ stats.get('diabetes_rate', 'N/A') }}%</h4>
-                        <p class="text-muted mb-0">Diabetes</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card border-info border-2 h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-weight fa-3x text-info mb-3"></i>
-                        <h4 class="fw-bold">{{ stats.get('obesity_rate', 'N/A') }}%</h4>
-                        <p class="text-muted mb-0">Obesitas</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Key Insights -->
-<section class="bg-light py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-4">Key Insights & Findings</h2>
-        
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                        <h5 class="card-title fw-bold text-primary">
-                            <i class="fas fa-lightbulb"></i> Demographic Insights
-                        </h5>
-                        <hr>
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-success"></i>
-                                <strong>Usia rata-rata:</strong> {{ stats.get('mean_age', 'N/A') }} tahun, 
-                                menunjukkan risiko meningkat pada usia dewasa-tua
-                            </li>
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-success"></i>
-                                <strong>Distribusi gender:</strong> Dataset mencakup kedua gender untuk analisis komprehensif
-                            </li>
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-success"></i>
-                                <strong>Urban vs Rural:</strong> Perbedaan pola risiko antara perkotaan dan pedesaan
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                        <h5 class="card-title fw-bold text-danger">
-                            <i class="fas fa-exclamation-triangle"></i> Risk Factor Insights
-                        </h5>
-                        <hr>
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-danger"></i>
-                                <strong>Hipertensi:</strong> Salah satu faktor risiko utama dengan prevalensi 
-                                {{ stats.get('hypertension_rate', 'N/A') }}%
-                            </li>
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-danger"></i>
-                                <strong>Diabetes:</strong> Faktor risiko signifikan yang memerlukan perhatian khusus
-                            </li>
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-danger"></i>
-                                <strong>Obesitas:</strong> Prevalensi {{ stats.get('obesity_rate', 'N/A') }}% 
-                                memerlukan intervensi gaya hidup
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Model Performance -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-4">Model Performance</h2>
-        
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Classification Metrics</h5>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="modelPerformanceChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="alert alert-info mt-4">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Note:</strong> Model telah melalui hyperparameter tuning dan cross-validation 
-                    untuk memastikan performa optimal dan generalisasi yang baik.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Recommendations -->
-<section class="bg-primary text-white py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Recommendations for Prevention</h2>
-            <p class="lead">Langkah-langkah pencegahan berdasarkan analisis data</p>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card bg-white text-dark h-100">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                        <h5 class="fw-bold">Regular Check-ups</h5>
-                        <p class="mb-0">
-                            Pemeriksaan kesehatan rutin terutama untuk usia 50+ tahun dan 
-                            individu dengan faktor risiko tinggi
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card bg-white text-dark h-100">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-running fa-3x text-success mb-3"></i>
-                        <h5 class="fw-bold">Healthy Lifestyle</h5>
-                        <p class="mb-0">
-                            Aktivitas fisik teratur, pola makan sehat, berhenti merokok, 
-                            dan manajemen stress
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card bg-white text-dark h-100">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-pills fa-3x text-danger mb-3"></i>
-                        <h5 class="fw-bold">Risk Management</h5>
-                        <p class="mb-0">
-                            Kontrol hipertensi, diabetes, dan kolesterol dengan pengobatan 
-                            dan monitoring yang tepat
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Data Science Process -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-4">Data Science Life Cycle</h2>
-        <p class="text-center text-muted mb-5">
-            7 tahapan yang dilakukan dalam project ini
-        </p>
-        
-        <div class="row g-3">
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-primary h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-primary text-white rounded-circle mx-auto mb-2">1</div>
-                        <h6 class="fw-bold mb-0 small">Business Understanding</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-info h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-info text-white rounded-circle mx-auto mb-2">2</div>
-                        <h6 class="fw-bold mb-0 small">Data Mining</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-success h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-success text-white rounded-circle mx-auto mb-2">3</div>
-                        <h6 class="fw-bold mb-0 small">Data Cleaning</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-warning h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-warning text-white rounded-circle mx-auto mb-2">4</div>
-                        <h6 class="fw-bold mb-0 small">Data Exploration</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-danger h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-danger text-white rounded-circle mx-auto mb-2">5</div>
-                        <h6 class="fw-bold mb-0 small">Feature Engineering</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-secondary h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-secondary text-white rounded-circle mx-auto mb-2">6</div>
-                        <h6 class="fw-bold mb-0 small">Predictive Modeling</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-dark h-100">
-                    <div class="card-body">
-                        <div class="step-number bg-dark text-white rounded-circle mx-auto mb-2">7</div>
-                        <h6 class="fw-bold mb-0 small">Data Visualization</h6>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-3 col-6">
-                <div class="card text-center border-success h-100 bg-success text-white">
-                    <div class="card-body">
-                        <i class="fas fa-check-circle fa-2x mb-2"></i>
-                        <h6 class="fw-bold mb-0 small">Completed!</h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{% endif %}
 
 {% endblock %}
 
@@ -419,82 +353,159 @@
         align-items: center;
         justify-content: center;
     }
-    
-    .step-number {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        font-weight: bold;
-    }
-    
-    .bg-pink {
-        background-color: #e91e63 !important;
-    }
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-// Data dari server - dideklarasikan di global scope
-var statsData = {
-    male_count: parseInt('{{ stats.get("male_count", 0) }}') || 0,
-    female_count: parseInt('{{ stats.get("female_count", 0) }}') || 0,
-    urban_count: parseInt('{{ stats.get("urban_count", 0) }}') || 0,
-    rural_count: parseInt('{{ stats.get("rural_count", 0) }}') || 0,
-    hypertension_rate: parseFloat('{{ stats.get("hypertension_rate", 0) }}') || 0,
-    diabetes_rate: parseFloat('{{ stats.get("diabetes_rate", 0) }}') || 0,
-    obesity_rate: parseFloat('{{ stats.get("obesity_rate", 0) }}') || 0
+{% if is_individual and patient_data %}
+// Patient data from server
+var patientData = {
+    age: {{ patient_data.get('age', 0) }},
+    gender: "{{ patient_data.get('gender', 'N/A') }}",
+    fasting_blood_sugar: {{ patient_data.get('fasting_blood_sugar', 0) }},
+    blood_pressure_systolic: {{ patient_data.get('blood_pressure_systolic', 0) }},
+    blood_pressure_diastolic: {{ patient_data.get('blood_pressure_diastolic', 0) }},
+    cholesterol_level: {{ patient_data.get('cholesterol_level', 0) }},
+    cholesterol_hdl: {{ patient_data.get('cholesterol_hdl', 0) }},
+    cholesterol_ldl: {{ patient_data.get('cholesterol_ldl', 0) }},
+    triglycerides: {{ patient_data.get('triglycerides', 0) }},
+    hypertension: {{ patient_data.get('hypertension', 0) }},
+    diabetes: {{ patient_data.get('diabetes', 0) }},
+    obesity: {{ patient_data.get('obesity', 0) }},
+    family_history: {{ patient_data.get('family_history', 0) }},
+    smoking_status: "{{ patient_data.get('smoking_status', 'Never') }}",
+    physical_activity: "{{ patient_data.get('physical_activity', 'Low') }}",
+    dietary_habits: "{{ patient_data.get('dietary_habits', 'Healthy') }}"
 };
 
 $(document).ready(function() {
-    // Gender Distribution Chart
-    var genderCtx = document.getElementById('genderChart');
-    if (genderCtx) {
-        new Chart(genderCtx.getContext('2d'), {
-            type: 'doughnut',
+    // Blood Sugar Chart
+    var bsCtx = document.getElementById('bloodSugarChart');
+    if (bsCtx) {
+        new Chart(bsCtx.getContext('2d'), {
+            type: 'bar',
             data: {
-                labels: ['Male', 'Female'],
+                labels: ['Nilai Anda', 'Normal (Max)', 'Diabetes (Min)'],
                 datasets: [{
-                    data: [statsData.male_count, statsData.female_count],
-                    backgroundColor: ['#36A2EB', '#FF6384'],
-                    hoverOffset: 4
+                    label: 'Gula Darah (mg/dL)',
+                    data: [patientData.fasting_blood_sugar, 100, 126],
+                    backgroundColor: [
+                        patientData.fasting_blood_sugar >= 126 ? 'rgba(255, 99, 132, 0.7)' : 
+                        patientData.fasting_blood_sugar > 100 ? 'rgba(255, 206, 86, 0.7)' : 
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 99, 132, 0.7)'
+                    ],
+                    borderColor: [
+                        patientData.fasting_blood_sugar >= 126 ? 'rgba(255, 99, 132, 1)' : 
+                        patientData.fasting_blood_sugar > 100 ? 'rgba(255, 206, 86, 1)' : 
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: Math.max(patientData.fasting_blood_sugar, 150) + 20
+                    }
+                },
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        display: false
                     }
                 }
             }
         });
     }
     
-    // Region Distribution Chart
-    var regionCtx = document.getElementById('regionChart');
-    if (regionCtx) {
-        new Chart(regionCtx.getContext('2d'), {
-            type: 'pie',
+    // Blood Pressure Chart
+    var bpCtx = document.getElementById('bloodPressureChart');
+    if (bpCtx) {
+        new Chart(bpCtx.getContext('2d'), {
+            type: 'bar',
             data: {
-                labels: ['Urban', 'Rural'],
+                labels: ['Sistolik (Anda)', 'Diastolik (Anda)', 'Sistolik Normal', 'Diastolik Normal'],
                 datasets: [{
-                    data: [statsData.urban_count, statsData.rural_count],
-                    backgroundColor: ['#FFCE56', '#4BC0C0'],
-                    hoverOffset: 4
+                    label: 'Tekanan Darah (mmHg)',
+                    data: [
+                        patientData.blood_pressure_systolic, 
+                        patientData.blood_pressure_diastolic,
+                        120,
+                        80
+                    ],
+                    backgroundColor: [
+                        patientData.blood_pressure_systolic >= 140 ? 'rgba(255, 99, 132, 0.7)' : 
+                        patientData.blood_pressure_systolic >= 120 ? 'rgba(255, 206, 86, 0.7)' : 
+                        'rgba(75, 192, 192, 0.7)',
+                        patientData.blood_pressure_diastolic >= 90 ? 'rgba(255, 99, 132, 0.7)' : 
+                        patientData.blood_pressure_diastolic >= 80 ? 'rgba(255, 206, 86, 0.7)' : 
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+    
+    // Cholesterol Chart
+    var cholCtx = document.getElementById('cholesterolChart');
+    if (cholCtx) {
+        new Chart(cholCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Total', 'HDL (Baik)', 'LDL (Buruk)', 'Trigliserida'],
+                datasets: [{
+                    label: 'Kolesterol (mg/dL)',
+                    data: [
+                        patientData.cholesterol_level,
+                        patientData.cholesterol_hdl,
+                        patientData.cholesterol_ldl,
+                        patientData.triglycerides
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(255, 206, 86, 0.7)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 }
             }
@@ -507,24 +518,17 @@ $(document).ready(function() {
         new Chart(riskCtx.getContext('2d'), {
             type: 'bar',
             data: {
-                labels: ['Hypertension', 'Diabetes', 'Obesity'],
+                labels: ['Hipertensi', 'Diabetes', 'Obesitas', 'Riwayat Keluarga'],
                 datasets: [{
-                    label: 'Prevalence (%)',
+                    label: 'Status',
                     data: [
-                        statsData.hypertension_rate,
-                        statsData.diabetes_rate,
-                        statsData.obesity_rate
+                        patientData.hypertension,
+                        patientData.diabetes,
+                        patientData.obesity,
+                        patientData.family_history
                     ],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.7)',
-                        'rgba(255, 206, 86, 0.7)',
-                        'rgba(54, 162, 235, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(54, 162, 235, 1)'
-                    ],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 2
                 }]
             },
@@ -534,10 +538,10 @@ $(document).ready(function() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100,
+                        max: 1,
                         ticks: {
                             callback: function(value) {
-                                return value + '%';
+                                return value === 1 ? 'Ya' : 'Tidak';
                             }
                         }
                     }
@@ -551,16 +555,22 @@ $(document).ready(function() {
         });
     }
     
-    // Model Performance Chart
-    var perfCtx = document.getElementById('modelPerformanceChart');
-    if (perfCtx) {
-        new Chart(perfCtx.getContext('2d'), {
+    // Lifestyle Chart
+    var lifeCtx = document.getElementById('lifestyleChart');
+    if (lifeCtx) {
+        var smokingScore = patientData.smoking_status === 'Never' ? 2 : 
+                          patientData.smoking_status === 'Past' ? 1 : 0;
+        var activityScore = patientData.physical_activity === 'High' ? 2 : 
+                           patientData.physical_activity === 'Moderate' ? 1 : 0;
+        var dietScore = patientData.dietary_habits === 'Healthy' ? 2 : 0;
+        
+        new Chart(lifeCtx.getContext('2d'), {
             type: 'radar',
             data: {
-                labels: ['Accuracy', 'Precision', 'Recall', 'F1-Score'],
+                labels: ['Merokok', 'Aktivitas Fisik', 'Pola Makan'],
                 datasets: [{
-                    label: 'Model Performance',
-                    data: [85, 83, 87, 85],
+                    label: 'Skor Gaya Hidup',
+                    data: [smokingScore, activityScore, dietScore],
                     fill: true,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgb(75, 192, 192)',
@@ -576,10 +586,11 @@ $(document).ready(function() {
                 scales: {
                     r: {
                         beginAtZero: true,
-                        max: 100,
+                        max: 2,
                         ticks: {
+                            stepSize: 1,
                             callback: function(value) {
-                                return value + '%';
+                                return value === 2 ? 'Baik' : value === 1 ? 'Sedang' : 'Buruk';
                             }
                         }
                     }
@@ -587,6 +598,54 @@ $(document).ready(function() {
             }
         });
     }
+    
+    // Health Radar Chart
+    var radarCtx = document.getElementById('healthRadarChart');
+    if (radarCtx) {
+        // Calculate normalized scores (0-100, higher is better)
+        var ageScore = Math.max(0, 100 - (patientData.age - 25) * 1.33);
+        var bsScore = Math.max(0, 100 - Math.abs(patientData.fasting_blood_sugar - 85) * 0.5);
+        var bpScore = Math.max(0, 100 - Math.abs(patientData.blood_pressure_systolic - 110) * 0.5);
+        var cholScore = Math.max(0, 100 - Math.abs(patientData.cholesterol_level - 180) * 0.3);
+        var lifestyleScore = ((smokingScore + activityScore + dietScore) / 6) * 100;
+        var riskScore = 100 - ((patientData.hypertension + patientData.diabetes + 
+                              patientData.obesity + patientData.family_history) * 25);
+        
+        new Chart(radarCtx.getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Usia', 'Gula Darah', 'Tekanan Darah', 'Kolesterol', 'Gaya Hidup', 'Faktor Risiko'],
+                datasets: [{
+                    label: 'Profil Kesehatan Anda',
+                    data: [ageScore, bsScore, bpScore, cholScore, lifestyleScore, riskScore],
+                    fill: true,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    pointBackgroundColor: 'rgb(54, 162, 235)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(54, 162, 235)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 25
+                        }
+                    }
+                }
+            }
+        });
+    }
 });
+{% else %}
+// Dataset statistics charts (fallback - only if needed)
+console.log('No individual patient data - showing dataset statistics');
+{% endif %}
 </script>
 {% endblock %}

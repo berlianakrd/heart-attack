@@ -104,17 +104,8 @@ $(document).on('click', 'button[type="reset"]', function() {
 });
 
 // ==================== Number Input Validation ====================
-$('input[type="number"]').on('input', function() {
-    var min = parseFloat($(this).attr('min'));
-    var max = parseFloat($(this).attr('max'));
-    var value = parseFloat($(this).val());
-    
-    if (value < min) {
-        $(this).val(min);
-    } else if (value > max) {
-        $(this).val(max);
-    }
-});
+// DISABLED - Biarkan user mengetik bebas tanpa validasi otomatis
+// Validasi hanya akan jalan saat submit form (HTML5 native validation)
 
 // ==================== Loading State Management ====================
 function showLoading(element) {

@@ -16,7 +16,7 @@
                 </p>
                 <div class="alert alert-light d-inline-block">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Model:</strong> {{ model_name }} | <strong>Accuracy:</strong> {{ accuracy }}%
+                    <strong>Model:</strong> {{ model_name }} | <strong>Akurasi:</strong> {{ accuracy }}%
                 </div>
             </div>
         </div>
@@ -355,6 +355,13 @@
                             <h6 class="fw-bold mb-3"><i class="fas fa-list-check"></i> Rekomendasi:</h6>
                             <ul class="list-unstyled" id="recommendationsList"></ul>
                         </div>
+                        
+                        <!-- Tombol Lihat Analisis Lengkap -->
+                        <div class="d-grid mt-4">
+                            <a href="/analysis" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-chart-line"></i> Lihat Analisis Lengkap
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -444,6 +451,46 @@
 {% block extra_js %}
 <script>
 $(document).ready(function() {
+    // Terjemahan Bahasa Indonesia
+    var translations = {
+        'No Heart Attack Risk': 'Tidak Ada Risiko Serangan Jantung',
+        'Heart Attack Risk': 'Ada Risiko Serangan Jantung',
+        'Low': 'Rendah',
+        'Medium': 'Sedang',
+        'High': 'Tinggi',
+        'Risk': 'Risiko',
+        '⚠️ HIGH RISK: Immediate medical consultation recommended. Please see a cardiologist as soon as possible.': 
+            '⚠️ RISIKO TINGGI: Konsultasi medis segera diperlukan. Silakan segera temui dokter spesialis jantung.',
+        '⚠️ RISK DETECTED: Please consult with a healthcare professional for proper assessment.':
+            '⚠️ RISIKO TERDETEKSI: Silakan konsultasikan dengan tenaga kesehatan profesional untuk penilaian yang tepat.',
+        '✅ LOW RISK: Continue maintaining healthy lifestyle habits.':
+            '✅ RISIKO RENDAH: Lanjutkan kebiasaan gaya hidup sehat.',
+        '✅ CURRENTLY LOW RISK: Maintain healthy habits and regular check-ups.':
+            '✅ SAAT INI RISIKO RENDAH: Pertahankan kebiasaan sehat dan pemeriksaan rutin.',
+        'Regular cardiovascular check-ups recommended due to age':
+            'Pemeriksaan kardiovaskular rutin dianjurkan karena usia',
+        'Monitor and control blood pressure regularly':
+            'Pantau dan kontrol tekanan darah secara teratur',
+        'Maintain good blood sugar control':
+            'Pertahankan kontrol gula darah yang baik',
+        'Weight management program recommended':
+            'Program manajemen berat badan dianjurkan',
+        'Quit smoking - major risk factor for heart disease':
+            'Berhenti merokok - faktor risiko utama penyakit jantung',
+        'Increase physical activity to at least 150 minutes per week':
+            'Tingkatkan aktivitas fisik minimal 150 menit per minggu',
+        'Adopt a heart-healthy diet (low salt, low saturated fat)':
+            'Terapkan pola makan sehat untuk jantung (rendah garam, rendah lemak jenuh)',
+        'Schedule immediate appointment with cardiologist':
+            'Jadwalkan janji segera dengan dokter spesialis jantung',
+        'Consider cardiac screening tests (ECG, stress test)':
+            'Pertimbangkan tes skrining jantung (EKG, tes stress)',
+        'Continue annual health check-ups':
+            'Lanjutkan pemeriksaan kesehatan tahunan',
+        'Maintain healthy lifestyle habits':
+            'Pertahankan kebiasaan gaya hidup sehat'
+    };
+    
     // Form submission handler
     $('#predictionForm').on('submit', function(e) {
         e.preventDefault();
@@ -451,7 +498,7 @@ $(document).ready(function() {
         // Show loading
         $('#loadingIndicator').show();
         $('#resultCard').hide();
-        $('#predictBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+        $('#predictBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Memproses...');
         
         // Collect form data
         var formData = {};
@@ -494,10 +541,14 @@ $(document).ready(function() {
             error: function(xhr, status, error) {
                 $('#loadingIndicator').hide();
                 $('#predictBtn').prop('disabled', false).html('<i class="fas fa-calculator"></i> Prediksi Risiko Sekarang');
-                alert('Prediction failed: ' + error);
+                alert('Prediksi gagal: ' + error);
             }
         });
     });
+    
+    function translate(text) {
+        return translations[text] || text;
+    }
     
     function displayResult(response) {
         // Set header color based on risk
@@ -510,8 +561,8 @@ $(document).ready(function() {
             '<i class="fas fa-heart fa-4x text-success"></i>';
         $('#resultIcon').html(icon);
         
-        // Set label
-        $('#resultLabel').text(response.prediction_label);
+        // Set label (translated)
+        $('#resultLabel').text(translate(response.prediction_label));
         
         // Set probability
         if (response.probability !== null) {
@@ -523,19 +574,20 @@ $(document).ready(function() {
             $('#resultProgress').removeClass().addClass('progress-bar bg-' + response.risk_color);
         }
         
-        // Set risk level
-        $('#riskLevel').html('<span class="badge bg-' + response.risk_color + ' fs-6">' + 
-                            response.risk_level + ' Risk</span>');
+        // Set risk level (translated)
+        var riskText = translate(response.risk_level) + ' ' + translate('Risk');
+        $('#riskLevel').html('<span class="badge bg-' + response.risk_color + ' fs-6">' + riskText + '</span>');
         
-        // Set message
+        // Set message (translated)
         $('#resultMessage').removeClass().addClass('alert alert-' + response.risk_color);
-        $('#resultMessage').html('<strong>' + response.message + '</strong>');
+        $('#resultMessage').html('<strong>' + translate(response.message) + '</strong>');
         
-        // Set recommendations
+        // Set recommendations (translated)
         var recommendationsHtml = '';
         response.recommendations.forEach(function(rec) {
+            var translatedRec = translate(rec);
             recommendationsHtml += '<li class="mb-2"><i class="fas fa-check-circle text-success"></i> ' + 
-                                  rec + '</li>';
+                                  translatedRec + '</li>';
         });
         $('#recommendationsList').html(recommendationsHtml);
         
