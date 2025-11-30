@@ -347,6 +347,15 @@ $(document).ready(function() {
     $('footer').find('.current-year').text(currentYear);
 });
 
+// ==================== Helper: Check if element is in viewport ====================
+function isInViewport(element) {
+    const elementTop = $(element).offset().top;
+    const elementBottom = elementTop + $(element).outerHeight();
+    const viewportTop = $(window).scrollTop();
+    const viewportBottom = viewportTop + $(window).height();
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+}
+
 // ==================== Statistics Counter Animation ====================
 function animateCounter(element, target, duration = 2000) {
     const start = 0;
@@ -363,10 +372,10 @@ function animateCounter(element, target, duration = 2000) {
     }, 16);
 }
 
-// Animate counters when visible
+// Animate counters when visible - FIXED VERSION
 $(window).scroll(function() {
     $('.stat-card h3').each(function() {
-        if ($(this).is(':in-viewport') && !$(this).hasClass('animated')) {
+        if (isInViewport(this) && !$(this).hasClass('animated')) {
             $(this).addClass('animated');
             const target = parseInt($(this).text());
             if (!isNaN(target)) {
@@ -376,15 +385,6 @@ $(window).scroll(function() {
         }
     });
 });
-
-// Custom jQuery selector for viewport checking
-$.expr.filters.inviewport = function(el) {
-    const elementTop = $(el).offset().top;
-    const elementBottom = elementTop + $(el).outerHeight();
-    const viewportTop = $(window).scrollTop();
-    const viewportBottom = viewportTop + $(window).height();
-    return elementBottom > viewportTop && elementTop < viewportBottom;
-};
 
 // ==================== Error Handling ====================
 window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -407,19 +407,5 @@ if (window.performance) {
         }, 0);
     });
 }
-
-// ==================== Service Worker Registration (Optional) ====================
-// Uncomment if you want to add PWA capabilities
-/*
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(function(registration) {
-            console.log('ServiceWorker registration successful');
-        }, function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-}
-*/
 
 // ==================== End of Script ====================
