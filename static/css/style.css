@@ -65,10 +65,12 @@ a:hover {
     font-weight: 700;
     font-size: 1.25rem;
     transition: transform 0.3s ease;
+    color: white !important;
 }
 
 .navbar-brand:hover {
     transform: scale(1.05);
+    color: white !important;
 }
 
 .navbar-nav .nav-link {
@@ -77,15 +79,18 @@ a:hover {
     padding: 0.5rem 1rem;
     border-radius: 5px;
     transition: all 0.3s ease;
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .navbar-nav .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
+    color: white !important;
 }
 
 .navbar-nav .nav-link.active {
     background-color: rgba(255, 255, 255, 0.2);
+    color: white !important;
 }
 
 /* ==================== Buttons ==================== */
@@ -110,10 +115,12 @@ a:hover {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     border: none;
+    color: white !important;
 }
 
 .btn-primary:hover {
     background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    color: white !important;
 }
 
 /* ==================== Cards ==================== */
@@ -202,6 +209,16 @@ section {
 .hero-section {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     position: relative;
+    color: white;
+}
+
+.hero-section h1,
+.hero-section h2,
+.hero-section h3,
+.hero-section h4,
+.hero-section h5,
+.hero-section p {
+    color: white !important;
 }
 
 .hero-section::before {
@@ -296,6 +313,7 @@ section {
 footer {
     background-color: var(--dark-color);
     margin-top: auto;
+    color: #adb5bd;
 }
 
 footer a {
@@ -454,6 +472,7 @@ footer a:hover {
 
 .bg-gradient {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white !important;
 }
 
 .shadow-custom {
@@ -559,22 +578,58 @@ canvas {
 /* ==================== Custom Backgrounds ==================== */
 .bg-gradient-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+.bg-gradient-primary h1,
+.bg-gradient-primary h2,
+.bg-gradient-primary h3,
+.bg-gradient-primary h4,
+.bg-gradient-primary h5,
+.bg-gradient-primary p,
+.bg-gradient-primary .lead {
+    color: white !important;
 }
 
 .bg-gradient-success {
     background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%) !important;
+    color: white !important;
 }
 
 .bg-gradient-danger {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    color: white !important;
 }
 
 .bg-gradient-warning {
     background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%) !important;
+    color: #333 !important;
 }
 
 .bg-gradient-info {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+.bg-gradient-info h1,
+.bg-gradient-info h2,
+.bg-gradient-info h3,
+.bg-gradient-info h4,
+.bg-gradient-info h5,
+.bg-gradient-info p,
+.bg-gradient-info .lead {
+    color: white !important;
+}
+
+/* Ensure text-white class works everywhere */
+.text-white,
+.text-white h1,
+.text-white h2,
+.text-white h3,
+.text-white h4,
+.text-white h5,
+.text-white p {
+    color: white !important;
 }
 
 /* ==================== End of Stylesheet ==================== */
